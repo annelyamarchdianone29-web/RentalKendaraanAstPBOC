@@ -96,6 +96,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         cmbJenis = new javax.swing.JComboBox<>();
         cmbStatus = new javax.swing.JComboBox<>();
         lblId = new javax.swing.JLabel();
+        btnActive = new javax.swing.JButton();
         scrollPanel = new javax.swing.JScrollPane();
         tblKendaraan = new javax.swing.JTable();
         panelJadwal = new javax.swing.JPanel();
@@ -132,8 +133,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnDelete.setText("Not Active");
         btnDelete.addActionListener(this::btnDeleteActionPerformed);
 
-        btnUpdate.setBackground(new java.awt.Color(0, 204, 204));
-        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setBackground(new java.awt.Color(255, 255, 51));
+        btnUpdate.setForeground(new java.awt.Color(51, 51, 51));
         btnUpdate.setText("Update");
         btnUpdate.addActionListener(this::btnUpdateActionPerformed);
 
@@ -149,6 +150,11 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         lblId.setText("-");
 
+        btnActive.setBackground(new java.awt.Color(0, 204, 51));
+        btnActive.setForeground(new java.awt.Color(255, 255, 255));
+        btnActive.setText("Active");
+        btnActive.addActionListener(this::btnActiveActionPerformed);
+
         javax.swing.GroupLayout panelFormLayout = new javax.swing.GroupLayout(panelForm);
         panelForm.setLayout(panelFormLayout);
         panelFormLayout.setHorizontalGroup(
@@ -161,6 +167,8 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnUpdate)
                         .addGap(18, 18, 18)
+                        .addComponent(btnActive)
+                        .addGap(23, 23, 23)
                         .addComponent(btnDelete)
                         .addGap(18, 18, 18)
                         .addComponent(btnCancel))
@@ -218,7 +226,8 @@ public class AdminDashboard extends javax.swing.JFrame {
                     .addComponent(btnCancel)
                     .addComponent(btnDelete)
                     .addComponent(btnUpdate)
-                    .addComponent(btnAdd))
+                    .addComponent(btnAdd)
+                    .addComponent(btnActive))
                 .addGap(31, 31, 31))
         );
 
@@ -431,6 +440,15 @@ public class AdminDashboard extends javax.swing.JFrame {
         if (row < 0) {
             return;
         }
+        
+        if(tblKendaraan.getValueAt(row, 6).toString()=="not active"){
+            btnDelete.setEnabled(false);
+            btnActive.setEnabled(true);
+        }else{
+            btnActive.setEnabled(false);
+            btnDelete.setEnabled(true);
+        }
+        
         lblId.setText(tblKendaraan.getValueAt(row, 0).toString());
         txtKode.setText(tblKendaraan.getValueAt(row, 1).toString());
         txtMerk.setText(tblKendaraan.getValueAt(row, 2).toString());
@@ -446,6 +464,30 @@ public class AdminDashboard extends javax.swing.JFrame {
             isiKodeOtomatis();
         }
     }//GEN-LAST:event_cmbJenisActionPerformed
+
+    private void btnActiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActiveActionPerformed
+        // TODO add your handling code here:
+        if (lblId.getText().equals("-")) {
+            JOptionPane.showMessageDialog(this, "Pilih kendaraan di tabel dulu!");
+            return;
+        }
+        int id = Integer.parseInt(lblId.getText());
+
+        int ok = JOptionPane.showConfirmDialog(this,
+                "Altifkan kendaraan " + txtKode.getText() + "?",
+                "Konfirmasi", JOptionPane.YES_NO_OPTION);
+        if (ok != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        if (kc.aktifkan(id)) {
+            JOptionPane.showMessageDialog(this, "Kendaraan diaktifkan");
+            kosongkanForm();
+            loadKendaraan();
+        } else {
+            JOptionPane.showMessageDialog(this, "Gagal mengaktifkan");
+        }
+    }//GEN-LAST:event_btnActiveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -473,6 +515,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActive;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnDelete;

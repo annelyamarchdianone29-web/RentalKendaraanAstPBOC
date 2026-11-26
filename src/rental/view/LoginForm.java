@@ -157,7 +157,7 @@ public class LoginForm extends javax.swing.JFrame {
         //untuk admin
         AdminController ac = new AdminController();
         if (ac.cekLogin(username, password)) {
-            JOptionPane.showMessageDialog(this, "Login Berhasil sebagai Member");
+            JOptionPane.showMessageDialog(this, "Login Berhasil sebagai Admin");
             new AdminDashboard(ac.adminLogin).setVisible(true);
             this.dispose();
             return;

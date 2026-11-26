@@ -44,6 +44,7 @@ public class KendaraanController {
             dtm.addColumn("Merk Kendaraan");
             dtm.addColumn("Jenis Kendaraan");
             dtm.addColumn("Harga Perhari");
+            dtm.addColumn("Ketersedian");
             dtm.addColumn("Status");
         }
         return dtm;
@@ -68,13 +69,13 @@ public class KendaraanController {
             dtm.getDataVector().removeAllElements();
             dtm.fireTableDataChanged();
             //query
-            sql = "SELECT * FROM m_kendaraan WHERE is_active = 0 ORDER BY id DESC";
+            sql = "SELECT * FROM m_kendaraan ORDER BY id DESC";
 
             //eksekusi query
             res = stm.executeQuery(sql);
             //data hasil query masukan ke design dtm
             while (res.next()) {
-                Object[] obj = new Object[4];
+                Object[] obj = new Object[7];
                 //nama di getstring harus sama dengan di DB
                 obj[0] = res.getString("id");
                 obj[1] = res.getString("kode_kendaraan");
@@ -82,10 +83,11 @@ public class KendaraanController {
                 obj[3] = res.getString("jenis");
                 obj[4] = res.getString("harga_perhari");
                 obj[5] = res.getInt("status") == 0 ? "Ready" : "Disewa";
+                obj[6] = res.getInt("is_active") == 0 ? "active" : "not active";
                 dtm.addRow(obj);
             }
         } catch (Exception e) {
-            System.out.println("Query Gagal...");
+            System.out.println("Query Gagal..."+e);
         }
     }
 
@@ -94,11 +96,12 @@ public class KendaraanController {
         try {
             dtmReady.getDataVector().removeAllElements();
             dtmReady.fireTableDataChanged();
+            
             sql = "SELECT * FROM m_kendaraan WHERE status = 0 AND is_active = 0";
 
             res = stm.executeQuery(sql);
             while (res.next()) {
-                Object[] obj = new Object[5];
+                Object[] obj = new Object[6];
                 obj[0] = res.getString("id");
                 obj[1] = res.getString("kode_kendaraan");
                 obj[2] = res.getString("merk");
@@ -156,7 +159,7 @@ public class KendaraanController {
     public boolean tambah(Kendaraan k) {
         boolean status = false;
         try {
-            sql = "INSERT INTO m_kendaraan (kode_kendaraan, merk, jenis, harga_per_hari, status, is_active) "
+            sql = "INSERT INTO m_kendaraan (kode_kendaraan, merk, jenis, harga_perhari, status, is_active) "
                     + "VALUES (?,?,?,?,?,0)";
             PreparedStatement ps = Koneksi.con.prepareStatement(sql);
             ps.setString(1, k.getKodeKendaraan());
@@ -167,7 +170,7 @@ public class KendaraanController {
             ps.executeUpdate();   // khusus INSERT/UPDATE/DELETE
             status = true;
         } catch (Exception e) {
-            System.out.println("Query Gagal...");
+            System.out.println("Query Gagal..."+e);
         }
         return status;
     }
@@ -245,6 +248,21 @@ public class KendaraanController {
         }
         return status;
     }
+    
+    public boolean aktifkan(int id) {
+        boolean status = false;
+        try {
+            sql = "UPDATE m_kendaraan SET is_active = 0 WHERE id = ?";
+            PreparedStatement ps = Koneksi.con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            status = true;
+        } catch (Exception e) {
+            System.out.println("Query Gagal... " + e);
+        }
+        return status;
+    }
+    
 
     //RINGKASAN KAPASITAS
     // status: -1 = semua, 0 = ready, 1 = disewa
