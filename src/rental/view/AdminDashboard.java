@@ -389,7 +389,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Gagal mengubah data");
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
-
+//tes 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
         if (lblId.getText().equals("-")) {
